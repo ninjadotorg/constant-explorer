@@ -1,0 +1,33 @@
+.footer {
+  background-color: $footerBg;
+  padding: 35px 0 15px;
+  min-height: 200px;
+  color: $white;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+      a {
+        color: $white;
+      }
+      padding-bottom: 5px;
+    }
+  }
+  .head-list {
+    font-size: 120%;
+    padding-bottom: 20px;
+  }
+  .copyright {
+    margin-top: 20px;
+    font-weight: 300;
+    text-align: center;
+    a {
+      padding: 0 10px;
+    }
+  }
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+}

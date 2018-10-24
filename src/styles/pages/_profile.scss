@@ -1,0 +1,21 @@
+.profile-page {
+  margin: 40px 0;
+  background-color: $white;
+  padding: 0 20px;
+  .profile-sidebar {
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin: 20px 10px;
+    border-radius: 5px;
+    .avatar-container {
+      padding: 15px;
+      min-height: 200px;
+    }
+  }
+  .profile-content {
+    padding: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    margin: 20px 10px;
+    border-radius: 5px;
+  }
+}

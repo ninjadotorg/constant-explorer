@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: $gray50;
+  min-height: 100vh;
+  font-family: 'PT Sans', sans-serif;
+  overflow-y: scroll;
+  color: $body;
+}
+
+a {
+  &:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+}
+
+.main {
+  min-height: calc(100vh - 100px - 347px);
+}
+
+.loading-page {
+  min-height: 1000px;
+}
+
+.uk-container > :last-child {
+  margin-bottom: 100px;
+}

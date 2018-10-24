@@ -1,0 +1,43 @@
+.header {
+  height: 100px;
+  background-color: $white;
+  line-height: 100px;
+  a {
+    color: $headerLogo;
+    text-decoration: none;
+  }
+  .row {
+    > div {
+      float: left;
+    }
+  }
+  .logo-container {
+    a {
+      display: block;
+      height: 100%;
+    }
+  }
+  .header-menu-bar {
+    float: right !important;
+    ul {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      li {
+        padding: 0 20px;
+        display: inline-block;
+        @media (max-width: 1280px) {
+          padding: 0 7px;
+        }
+        a {
+          display: block;
+          height: 100%;
+        }
+      }
+    }
+    button {
+      margin-left: 20px;
+    }
+  }
+}
