@@ -70,9 +70,11 @@ class Home extends React.Component {
                       <ul>
                         <li>Height: {block.Height}</li>
                         <li>Best block hash: {block.Hash}</li>
+                        <li>Best block signature: {block.BlockProducer}</li>
+                        <li>Current leader: {block.BlockProducer}</li>
                         <li>Total transactions: {block.TotalTxs}</li>
-                        <li>Salary Fund: {block.SalaryFund}</li>
-                        <li>Basic Salary: {block.BasicSalary}</li>
+                        <li>Salary Fund: {block.SalaryFund} constant</li>
+                        <li>Current Basic Salary: {block.BasicSalary} constant</li>
                       </ul>
                     </Typography>
                   </CardContent>
