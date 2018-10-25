@@ -8,6 +8,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import {withStyles} from '@material-ui/core/styles';
 import classNames from 'classnames';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Icon from '@material-ui/core/Icon';
+import {loadCSS} from 'fg-loadcss/src/loadCSS';
 
 class Blocks extends React.Component {
   static propTypes = {
@@ -23,6 +26,10 @@ class Blocks extends React.Component {
   }
 
   async componentDidMount() {
+    loadCSS(
+      'https://use.fontawesome.com/releases/v5.1.0/css/all.css',
+      document.querySelector('#insertion-point-jss'),
+    );
     const {match} = this.props;
     const {chainID} = match.params;
     console.log("ChainID:" + (chainID - 1));
@@ -33,6 +40,19 @@ class Blocks extends React.Component {
       blocks: blocks,
       chainID: chainID,
     });
+  }
+
+  timeConverter(UNIX_timestamp) {
+    var a = new Date(UNIX_timestamp * 1000);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = "0" + a.getMinutes();
+    var sec = "0" + a.getSeconds();
+    var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min.substr(-2) + ':' + sec.substr(-2);
+    return time;
   }
 
   render() {
@@ -53,7 +73,7 @@ class Blocks extends React.Component {
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography gutterBottom variant="h3" component="h2">
-                Blocks
+                <Icon className={classNames(classes.icon, 'fa fa-cubes')}/> Blocks
               </Typography>
               <Grid container spacing={40}>
                 {
@@ -70,6 +90,7 @@ class Blocks extends React.Component {
                               <li>Block signature: {block.BlockProducer}</li>
                               <li>Mined by {block.BlockProducer}</li>
                               <li>Total transactions: {block.TxHashes.length}</li>
+                              <li>Time: {this.timeConverter(block.Time)}</li>
                             </ul>
                           </Typography>
                         </CardContent>
@@ -83,17 +104,22 @@ class Blocks extends React.Component {
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography gutterBottom variant="h3" component="h2">
-                Transactions
+                <Icon className={classNames(classes.icon, 'fa fa-list-alt')}/> Transactions
               </Typography>
             </Paper>
           </Grid>
         </Grid>
       </div>
-    </div>;
+    </div>
+      ;
   }
 }
 
 const styles = theme => ({
+  icon: {
+    margin: theme.spacing.unit * 2,
+    display: "contents !important",
+  },
   heroUnit: {
     backgroundColor: theme.palette.background.paper,
   },
