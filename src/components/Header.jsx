@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
+import {withStyles} from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import Input from '@material-ui/core/Input';
 import Button from '@material-ui/core/Button';
-import { push } from 'connected-react-router';
+import {push} from 'connected-react-router';
 import cn from '@sindresorhus/class-names';
-import { showDialog } from '@/reducers/app/action';
+import {showDialog} from '@/reducers/app/action';
 
 class Header extends React.Component {
   static propTypes = {
@@ -24,12 +24,12 @@ class Header extends React.Component {
   }
 
   closeDialog = () => {
-    const { dispatch } = this.props;
+    const {dispatch} = this.props;
     dispatch(push('/login'));
   }
 
   clickHeaderSubmit = () => {
-    const { auth, dispatch, appShowDialog } = this.props;
+    const {auth, dispatch, appShowDialog} = this.props;
     if (auth.isLogged) {
       dispatch(push('/submit'));
     } else {
@@ -38,7 +38,7 @@ class Header extends React.Component {
   }
 
   render() {
-    const { classes, auth } = this.props;
+    const {classes, auth} = this.props;
 
     return (
       <header className="header">
@@ -48,22 +48,22 @@ class Header extends React.Component {
               <Link to="/">Constant explorer</Link>
             </div>
             <div className={classes.searchBar}>
-              <div className={classes.grow} />
+              <div className={classes.grow}/>
               <div className={classes.search}>
-                <div className={classes.searchIcon}>
-                  <SearchIcon />
-                </div>
-                <Input
+                {/*<div className={classes.searchIcon}>
+                  <SearchIcon/>
+                </div>*/}
+                {/*<Input
                   placeholder="Search..."
                   disableUnderline
                   classes={{
                     root: classes.inputRoot,
                     input: classes.inputInput,
                   }}
-                />
+                />*/}
               </div>
             </div>
-            <div className={cn('header-menu-bar', classes.menuBar)}>
+            {/*<div className={cn('header-menu-bar', classes.menuBar)}>
               <ul>
                 <li>
                   <Link to="/page1">Page1</Link>
@@ -78,7 +78,7 @@ class Header extends React.Component {
               <Button className="button-app-1" onClick={this.clickHeaderSubmit}>
                 Button
               </Button>
-            </div>
+            </div>*/}
           </div>
         </div>
       </header>
@@ -87,9 +87,7 @@ class Header extends React.Component {
 }
 
 const styles = theme => ({
-  root: {
-
-  },
+  root: {},
   logoContainer: {
     textTransform: 'uppercase',
     letterSpacing: '3.1px',
@@ -149,6 +147,6 @@ const styles = theme => ({
 });
 
 export default connect(
-  state => ({ auth: state.auth }),
-  dispatch => ({ appShowDialog: showDialog, dispatch }),
+  state => ({auth: state.auth}),
+  dispatch => ({appShowDialog: showDialog, dispatch}),
 )(withStyles(styles)(Header));
