@@ -68,7 +68,7 @@ class Home extends React.Component {
                     </Typography>
                     <Typography>
                       <ul>
-                        <li>Height: {block.Height}</li>
+                        <li>Height: <a href={`/blocks/${index + 1}`}>{block.Height}</a></li>
                         <li>Best block hash: {block.Hash}</li>
                         <li>Best block signature: {block.BlockProducer}</li>
                         <li>Current leader: {block.BlockProducer}</li>
