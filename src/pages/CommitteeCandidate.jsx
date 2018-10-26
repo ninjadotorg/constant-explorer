@@ -25,7 +25,7 @@ class CommitteeCandidate extends React.Component {
   }
 
   async componentDidMount() {
-    let candidates = await GetCommitteeCandidate();
+    const candidates = await GetCommitteeCandidate();
     if (candidates && candidates.Result) {
       this.setState(
         {
@@ -34,7 +34,7 @@ class CommitteeCandidate extends React.Component {
       );
     }
     console.log(candidates);
-    let producers = await GetBlockProducer();
+    const producers = await GetBlockProducer();
     if (producers && producers.Result) {
       this.setState(
         {
