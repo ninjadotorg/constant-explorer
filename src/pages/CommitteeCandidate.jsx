@@ -62,7 +62,7 @@ class CommitteeCandidate extends React.Component {
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
               <Typography gutterBottom variant="h3" component="h2">
-                <Icon className={classNames(classes.icon, 'fa fa-cubes')}/> Block Producer
+                <Icon className={classNames(classes.icon, 'fa fa-cubes')}/> Block Producers
               </Typography>
               <Grid container spacing={40}>
                 <Grid item sm={6} md={4} lg={12}>
@@ -91,11 +91,15 @@ class CommitteeCandidate extends React.Component {
                   <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>
                       <Typography align="left">
-                        <ul>
-                          {candidates.map((candidate, index) => (
-                            <li key={index}>Candidate publickey: {candidate}</li>
-                          ))}
-                        </ul>
+                        {candidates.length > 0 ? (
+                          <ul>
+                            {candidates.map((candidate, index) => (
+                              <li key={index}>Candidate publickey: {candidate}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span style={{textAlign: "center", display: "block"}}>No candidate</span>
+                        )}
                       </Typography>
                     </CardContent>
                   </Card>
