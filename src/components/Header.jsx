@@ -63,22 +63,22 @@ class Header extends React.Component {
                 />*/}
               </div>
             </div>
-            {/*<div className={cn('header-menu-bar', classes.menuBar)}>
+            <div className={cn('header-menu-bar', classes.menuBar)}>
               <ul>
                 <li>
-                  <Link to="/page1">Page1</Link>
+                  <Link to="/committee/">Committee</Link>
                 </li>
-                <li>
+                {/*<li>
                   <Link to="/page2">Page2</Link>
                 </li>
                 <li>
                   {!auth.isLogged ? <Link to="/login">Login</Link> : <Link to={`/profile/${auth.address}`}>Profile</Link>}
-                </li>
+                </li>*/}
               </ul>
-              <Button className="button-app-1" onClick={this.clickHeaderSubmit}>
+              {/*<Button className="button-app-1" onClick={this.clickHeaderSubmit}>
                 Button
-              </Button>
-            </div>*/}
+              </Button>*/}
+            </div>
           </div>
         </div>
       </header>

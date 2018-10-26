@@ -9,15 +9,12 @@ import Loading from './Loading';
 
 const Home = createDynamicImport(() => import('@/pages/Home'), Loading);
 const Blocks = createDynamicImport(() => import('@/pages/Blocks'), Loading);
-const Page2 = createDynamicImport(() => import('@/pages/Page2'), Loading);
-const Login = createDynamicImport(() => import('@/pages/Blocks'), Loading);
-const Submit = createDynamicImport(() => import('@/pages/Blocks'), Loading);
+const CommitteeCandidate = createDynamicImport(() => import('@/pages/CommitteeCandidate'), Loading);
 
 const routers = [
   {path: '/', exact: true, component: Home},
   {path: '/blocks/:chainID', component: Blocks},
-  {path: '/page2', component: Page2},
-  {path: '/page2/:address', component: Page2},
+  {path: '/committee/', component: CommitteeCandidate},
 ];
 
 class Router extends React.Component {
@@ -35,9 +32,9 @@ class Router extends React.Component {
             <Route key={route.path} {...route} />
           ))
         }
-        {auth.isLogged ? <Redirect from="/login" to={`/profile/${auth.address}`} exact/> :
-          <Route path="/login" component={Login}/>}
-        {!auth.isLogged ? <Redirect from="/submit" to="/login" exact/> : <Route path="/submit" component={Submit}/>}
+        {/*{auth.isLogged ? <Redirect from="/login" to={`/profile/${auth.address}`} exact/> :*/}
+        {/*<Route path="/login" component={Login}/>}*/}
+        {/*{!auth.isLogged ? <Redirect from="/submit" to="/login" exact/> : <Route path="/submit" component={Submit}/>}*/}
       </Switch>
     );
   }
