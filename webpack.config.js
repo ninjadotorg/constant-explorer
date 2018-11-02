@@ -90,21 +90,7 @@ module.exports = function webpackConfig(env, argv = {}) {
     module: {
       rules: [
         {
-          test: /\.css$/,
-          use: [
-            MiniCssExtractPlugin.loader,
-            'css-loader',
-            'postcss-loader',
-            {
-              loader: 'resolve-url-loader',
-              options: {
-                keepQuery: true,
-              },
-            },
-          ],
-        },
-        {
-          test: /\.scss$/,
+          test: /\.s?css$/,
           use: [
             MiniCssExtractPlugin.loader,
             'css-loader',
@@ -146,7 +132,7 @@ module.exports = function webpackConfig(env, argv = {}) {
       },
       resolve: {
         alias: { '@': appPath('src') },
-        extensions: ['.js', '.jsx', '.scss', '.css'],
+        extensions: ['.js', '.jsx', '.scss'],
         modules: [appPath('node_modules')],
       },
       plugins: [

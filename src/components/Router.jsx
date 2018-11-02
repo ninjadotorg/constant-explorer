@@ -1,20 +1,41 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import {createDynamicImport} from '@/services/app';
+import { createDynamicImport } from '@/services/app';
 import {
-  Switch, Route, Redirect, withRouter,
+  Switch,
+  Route,
+  withRouter,
+  // Redirect,
 } from 'react-router-dom';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import Loading from './Loading';
 
 const Home = createDynamicImport(() => import('@/pages/Home'), Loading);
+const Chain = createDynamicImport(() => import('@/pages/Chain'), Loading);
 const Blocks = createDynamicImport(() => import('@/pages/Blocks'), Loading);
-const CommitteeCandidate = createDynamicImport(() => import('@/pages/CommitteeCandidate'), Loading);
+const Block = createDynamicImport(() => import('@/pages/Block'), Loading);
+const Committees = createDynamicImport(() => import('@/pages/Committees'), Loading);
+const Txs = createDynamicImport(() => import('@/pages/Txs'), Loading);
+const Tx = createDynamicImport(() => import('@/pages/Tx'), Loading);
+const Tokens = createDynamicImport(() => import('@/pages/Tokens'), Loading);
+const Token = createDynamicImport(() => import('@/pages/Token'), Loading);
 
 const routers = [
-  {path: '/', exact: true, component: Home},
-  {path: '/blocks/:chainID', component: Blocks},
-  {path: '/committee/', component: CommitteeCandidate},
+  { path: '/', exact: true, component: Home },
+  { path: '/chain/:chainId/block/:blockHash', component: Block },
+  { path: '/chain/:chainId/blocks', component: Blocks },
+  { path: '/chain/:chainId', component: Chain },
+  { path: '/txs', exact: true, component: Txs },
+  { path: '/txs/pending', component: Txs },
+  { path: '/txs/voting', component: Txs },
+  { path: '/txs/bond', component: Txs },
+  { path: '/txs/gov-token', component: Txs },
+  { path: '/txs/bank-token', component: Txs },
+  { path: '/txs/custom-token', component: Txs },
+  { path: '/tx/:txHash', component: Tx },
+  { path: '/tokens', exact: true, component: Tokens },
+  { path: '/token/:customTokenId', component: Token },
+  { path: '/committees/', component: Committees },
 ];
 
 class Router extends React.Component {
@@ -24,7 +45,6 @@ class Router extends React.Component {
   }
 
   render() {
-    const {auth} = this.props;
     return (
       <Switch>
         {
@@ -32,12 +52,9 @@ class Router extends React.Component {
             <Route key={route.path} {...route} />
           ))
         }
-        {/*{auth.isLogged ? <Redirect from="/login" to={`/profile/${auth.address}`} exact/> :*/}
-        {/*<Route path="/login" component={Login}/>}*/}
-        {/*{!auth.isLogged ? <Redirect from="/submit" to="/login" exact/> : <Route path="/submit" component={Submit}/>}*/}
       </Switch>
     );
   }
 }
 
-export default withRouter(connect(state => ({auth: state.auth}), null)(Router));
+export default withRouter(connect(state => ({ auth: state.auth }), null)(Router));

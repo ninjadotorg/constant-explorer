@@ -12,7 +12,8 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": "off",
     "jsx-a11y/label-has-for": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "react/no-danger": "off"
+    "react/no-danger": "off",
+    "no-console": "off"
   },
   "settings": {
     "import/resolver": "webpack",

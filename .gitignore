@@ -7,3 +7,4 @@ dist
 .env.js
 testing
 .idea/
+.notes

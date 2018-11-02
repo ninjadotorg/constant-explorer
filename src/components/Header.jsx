@@ -1,21 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-import {Link} from 'react-router-dom';
-import {withStyles} from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
-import Input from '@material-ui/core/Input';
-import Button from '@material-ui/core/Button';
-import {push} from 'connected-react-router';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
 import cn from '@sindresorhus/class-names';
-import {showDialog} from '@/reducers/app/action';
+import { showDialog } from '@/reducers/app/action';
 
 class Header extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    auth: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    appShowDialog: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -23,61 +16,24 @@ class Header extends React.Component {
     this.state = {};
   }
 
-  closeDialog = () => {
-    const {dispatch} = this.props;
-    dispatch(push('/login'));
-  }
-
-  clickHeaderSubmit = () => {
-    const {auth, dispatch, appShowDialog} = this.props;
-    if (auth.isLogged) {
-      dispatch(push('/submit'));
-    } else {
-      dispatch(appShowDialog('You must login before submit a proposal', this.closeDialog));
-    }
-  }
-
   render() {
-    const {classes, auth} = this.props;
+    const { classes } = this.props;
 
     return (
       <header className="header">
-        <div className="uk-container">
+        <div className="container">
           <div className="row">
-            <div className={cn(classes.logoContainer, 'logo-container')}>
-              <Link to="/">Constant explorer</Link>
-            </div>
-            <div className={classes.searchBar}>
-              <div className={classes.grow}/>
-              <div className={classes.search}>
-                {/*<div className={classes.searchIcon}>
-                  <SearchIcon/>
-                </div>*/}
-                {/*<Input
-                  placeholder="Search..."
-                  disableUnderline
-                  classes={{
-                    root: classes.inputRoot,
-                    input: classes.inputInput,
-                  }}
-                />*/}
+            <div className="col-12">
+              <div className={cn(classes.logoContainer, 'logo-container')}>
+                <Link to="/">Constant explorer</Link>
               </div>
-            </div>
-            <div className={cn('header-menu-bar', classes.menuBar)}>
-              <ul>
-                <li>
-                  <Link to="/committee/">Committee</Link>
-                </li>
-                {/*<li>
-                  <Link to="/page2">Page2</Link>
-                </li>
-                <li>
-                  {!auth.isLogged ? <Link to="/login">Login</Link> : <Link to={`/profile/${auth.address}`}>Profile</Link>}
-                </li>*/}
-              </ul>
-              {/*<Button className="button-app-1" onClick={this.clickHeaderSubmit}>
-                Button
-              </Button>*/}
+              <div className={cn('header-menu-bar', classes.menuBar)}>
+                <ul>
+                  <li>
+                    <Link to="/committees/">Committee</Link>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -147,6 +103,6 @@ const styles = theme => ({
 });
 
 export default connect(
-  state => ({auth: state.auth}),
-  dispatch => ({appShowDialog: showDialog, dispatch}),
+  state => ({ auth: state.auth }),
+  dispatch => ({ appShowDialog: showDialog, dispatch }),
 )(withStyles(styles)(Header));
