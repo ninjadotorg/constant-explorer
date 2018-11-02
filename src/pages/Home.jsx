@@ -71,7 +71,7 @@ class Home extends React.Component {
           <Grid container spacing={40}>
             {
               Object.values(bestBlocks).map((block, index) => (
-                <Grid item key={block.Hash} sm={6} md={4} lg={6}>
+                <Grid item key={block.Hash} sm={3}>
                   <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>
                       <Typography gutterBottom variant="h5" component="h2">
@@ -87,7 +87,7 @@ class Home extends React.Component {
                           <li>
                             Best block hash:
                             {' '}
-                            <Link to={`/chain/${index + 1}/block/${block.Hash}`}>{block.Hash}</Link>
+                            <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
                           </li>
                           <li>
                             Best block signature:

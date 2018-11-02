@@ -22,20 +22,21 @@ const Token = createDynamicImport(() => import('@/pages/Token'), Loading);
 
 const routers = [
   { path: '/', exact: true, component: Home },
-  { path: '/chain/:chainId/block/:blockHash', component: Block },
-  { path: '/chain/:chainId/blocks', component: Blocks },
-  { path: '/chain/:chainId', component: Chain },
+  { path: '/chain/:chainId/blocks', exact: true, component: Blocks },
+  { path: '/chain/:chainId', exact: true, component: Chain },
+  { path: '/block/:blockHash', exact: true, component: Block },
+  { path: '/block/:blockHash/txs', exact: true, component: Txs },
   { path: '/txs', exact: true, component: Txs },
-  { path: '/txs/pending', component: Txs },
-  { path: '/txs/voting', component: Txs },
-  { path: '/txs/bond', component: Txs },
-  { path: '/txs/gov-token', component: Txs },
-  { path: '/txs/bank-token', component: Txs },
-  { path: '/txs/custom-token', component: Txs },
-  { path: '/tx/:txHash', component: Tx },
+  { path: '/txs/pending', exact: true, component: Txs },
+  { path: '/txs/voting', exact: true, component: Txs },
+  { path: '/txs/bond', exact: true, component: Txs },
+  { path: '/txs/gov-token', exact: true, component: Txs },
+  { path: '/txs/bank-token', exact: true, component: Txs },
+  { path: '/txs/custom-token', exact: true, component: Txs },
+  { path: '/tx/:txHash', exact: true, component: Tx },
   { path: '/tokens', exact: true, component: Tokens },
-  { path: '/token/:customTokenId', component: Token },
-  { path: '/committees/', component: Committees },
+  { path: '/token/:customTokenId', exact: true, component: Token },
+  { path: '/committees', exact: true, component: Committees },
 ];
 
 class Router extends React.Component {

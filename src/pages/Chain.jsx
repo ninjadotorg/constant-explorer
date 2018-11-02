@@ -10,7 +10,7 @@ import { withStyles } from '@material-ui/core/styles';
 import cn from '@sindresorhus/class-names';
 import Icon from '@material-ui/core/Icon';
 import { getBlocks } from '@/reducers/constant/action';
-
+import { Link } from 'react-router-dom';
 
 function timeConverter(UNIXTimestamp) {
   const a = new Date(UNIXTimestamp * 1000);
@@ -69,7 +69,7 @@ class Chain extends React.Component {
                   <li>
                     Block hash:
                     {' '}
-                    {block.Hash}
+                    <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
                   </li>
                   <li>
                     Block signature:
@@ -128,6 +128,14 @@ class Chain extends React.Component {
                       ? this.renderBlocks(blockArrays)
                       : ''
                   }
+                  {this.renderBlocks([
+                    { Hash: '00000', TxHashes: [] },
+                    { Hash: '00000', TxHashes: [] },
+                    { Hash: '00000', TxHashes: [] },
+                    { Hash: '00000', TxHashes: [] },
+                    { Hash: '00000', TxHashes: [] },
+                    { Hash: '00000', TxHashes: [] },
+                  ])}
                 </Grid>
               </Paper>
             </Grid>
