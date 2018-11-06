@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -70,28 +71,25 @@ class CommitteeCandidate extends React.Component {
                   <Grid item sm={6} md={4} lg={12}>
                     <Card className={classes.card}>
                       <CardContent className={classes.cardContent}>
-                        <Typography align="left">
-
-                          {
-                            !isEmpty(producers.list)
-                              ? (
-                                <ul>
-                                  {Object.keys(producers.list).map((index, key) => (
-                                    <li key={index}>
-                                      Chain #
-                                      {parseInt(key, 10) + 1}
-                                      :
-                                      {' '}
-                                      {producers.list[index]}
-                                    </li>
-                                  ))}
-                                </ul>
-                              )
-                              : (
-                                <span style={{ textAlign: 'center', display: 'block' }}>No producers</span>
-                              )
-                          }
-                        </Typography>
+                        {
+                          !isEmpty(producers.list)
+                            ? (
+                              <ul>
+                                {Object.keys(producers.list).map((index, key) => (
+                                  <li key={index}>
+                                    Chain #
+                                    <Link to={`/chain/${parseInt(key, 10) + 1}`}>{parseInt(key, 10) + 1}</Link>
+                                    :
+                                    {' '}
+                                    {producers.list[index]}
+                                  </li>
+                                ))}
+                              </ul>
+                            )
+                            : (
+                              <span style={{ textAlign: 'center', display: 'block' }}>No producers</span>
+                            )
+                        }
                       </CardContent>
                     </Card>
                   </Grid>

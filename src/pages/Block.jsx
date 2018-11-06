@@ -11,31 +11,54 @@ class Block extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     actionGetBlock: PropTypes.func.isRequired,
+    block: PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props);
 
-    const { match, actionGetBlock } = this.props;
+    const { match, block } = this.props;
     const { blockHash } = match.params;
 
     this.state = {
       blockHash,
-      block: {},
+      block,
+      isLatest: false,
     };
 
-    actionGetBlock(blockHash);
+    this.fetch();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log(nextProps);
     if (
       nextProps.block[prevState.blockHash] ?.updatedAt
         !== prevState.block[prevState.blockHash] ?.updatedAt
     ) {
-      return { block: nextProps.block };
+      if (!nextProps.block[prevState.blockHash].data.NextBlockHash) {
+        return { block: nextProps.block, isLatest: true };
+      }
+      return { block: nextProps.block, isLatest: false };
+    }
+    if (nextProps.match.params.blockHash !== prevState.blockHash) {
+      return { blockHash: nextProps.match.params.blockHash };
     }
     return null;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { blockHash, isLatest } = this.state;
+    if (prevState.blockHash !== blockHash) {
+      this.fetch();
+    }
+    if (prevState.blockHash === blockHash && isLatest) {
+      setTimeout(() => this.fetch(), 1000);
+    }
+  }
+
+  fetch = () => {
+    const { actionGetBlock } = this.props;
+    const { blockHash } = this.state;
+    actionGetBlock(blockHash);
   }
 
   render() {
@@ -71,17 +94,23 @@ class Block extends React.Component {
                         PreviousBlockHash:
                         <Link to={`/block/${block[blockHash] ?.data.PreviousBlockHash}`}>{`${block[blockHash] ?.data.PreviousBlockHash || ''}`}</Link>
                       </li>
-                      <li>
-                        NextBlockHash:
-                        <Link to={`/block/${block[blockHash] ?.data.NextBlockHash}`}>{`${block[blockHash] ?.data.NextBlockHash || ''}`}</Link>
-                      </li>
+                      {
+                        block[blockHash] ?.data.NextBlockHash
+                          ? (
+                            <li>
+                              NextBlockHash:
+                              <Link to={`/block/${block[blockHash] ?.data.NextBlockHash}`}>{`${block[blockHash] ?.data.NextBlockHash || ''}`}</Link>
+                            </li>
+                          )
+                          : 'NextBlockHash: mining...'
+                      }
                       <li>{`BlockProducer: ${block[blockHash] ?.data.BlockProducer || ''}`}</li>
                       <li>{`BlockProducerSign: ${block[blockHash] ?.data.BlockProducerSign || ''}`}</li>
                       <li>{`Data: ${block[blockHash] ?.data.Data || ''}`}</li>
                       <li>
                         Txs:
                         {' '}
-                        <Link to={`/block/${blockHash}/txs`}>100</Link>
+                        <Link to={`/block/${blockHash}/txs`}>{`${block[blockHash] ?.data.Txs.length || ''}`}</Link>
                       </li>
                     </ul>
                   </div>

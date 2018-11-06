@@ -2,101 +2,31 @@ import axios from 'axios';
 
 export const ACTIONS = {
   CONSTANT_INFO: 'CONSTANT_INFO',
-  CONSTANT_INFO_SUCCESS: 'CONSTANT_INFO_SUCCESS',
-  CONSTANT_INFO_FAILED: 'CONSTANT_INFO_FAILED',
-  CONSTANT_CHAINS: 'CONSTANT_CHAINS',
   CONSTANT_BLOCKS: 'CONSTANT_BLOCKS',
-  CONSTANT_BLOCKS_SUCCESS: 'CONSTANT_BLOCKS_SUCCESS',
-  CONSTANT_BLOCKS_FAILED: 'CONSTANT_BLOCKS_FAILED',
   CONSTANT_BLOCK: 'CONSTANT_BLOCK',
-  CONSTANT_BLOCK_SUCCESS: 'CONSTANT_BLOCK_SUCCESS',
-  CONSTANT_BLOCK_FAILED: 'CONSTANT_BLOCK_FAILED',
-  CONSTANT_TXS: 'CONSTANT_TXS',
-  CONSTANT_TXS_SUCCESS: 'CONSTANT_TXS_SUCCESS',
-  CONSTANT_TXS_FAILED: 'CONSTANT_TXS_FAILED',
+  CONSTANT_TX: 'CONSTANT_TX',
   CONSTANT_CANDIDATE: 'CONSTANT_CANDIDATE',
-  CONSTANT_CANDIDATE_SUCCESS: 'CONSTANT_CANDIDATE_SUCCESS',
-  CONSTANT_CANDIDATE_FAILED: 'CONSTANT_CANDIDATE_FAILED',
   CONSTANT_PRODUCER: 'CONSTANT_PRODUCER',
-  CONSTANT_PRODUCER_SUCCESS: 'CONSTANT_PRODUCER_SUCCESS',
-  CONSTANT_PRODUCER_FAILED: 'CONSTANT_PRODUCER_FAILED',
 };
 
 let idRequest = 1;
 
-export const getBlockchainInfo = () => (dispatch) => {
-  console.log('Load blockchain information from rpc api');
-  dispatch({ type: ACTIONS.CONSTANT_INFO });
+const createRPCRequest = (actionName, method, params) => (dispatch) => {
+  dispatch({ type: actionName });
   axios.post(`${process.env.internalAPI}`, {
     jsonrpc: '1.0',
-    method: 'getblockchaininfo',
-    params: '',
+    method,
+    params,
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_INFO_SUCCESS, payload: res.data, id: idRequest });
+    dispatch({ type: `${actionName}_SUCCESS`, payload: res.data, id: idRequest });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_INFO_FAILED, payload: e, id: idRequest });
+    dispatch({ type: `${actionName}_FAILED`, payload: e, id: idRequest });
   });
 };
 
-export const getBlocks = chainId => (dispatch) => {
-  console.log('Load blocks');
-  dispatch({ type: ACTIONS.CONSTANT_BLOCKS });
-  axios.post(`${process.env.internalAPI}`, {
-    jsonrpc: '1.0',
-    method: 'getblocks',
-    params: [10, chainId],
-    id: idRequest += 1,
-  }).then((res) => {
-    dispatch({
-      type: ACTIONS.CONSTANT_BLOCKS_SUCCESS, payload: res.data, chainId, id: idRequest,
-    });
-  }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCKS_FAILED, payload: e, id: idRequest });
-  });
-};
-
-export const getBlock = blockHash => (dispatch) => {
-  console.log('Load block');
-  dispatch({ type: ACTIONS.CONSTANT_BLOCK });
-  axios.post(`${process.env.internalAPI}`, {
-    jsonrpc: '1.0',
-    method: 'retrieveblock',
-    params: [blockHash, '2'],
-    id: idRequest += 1,
-  }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCK_SUCCESS, payload: res.data, id: idRequest });
-  }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCK_FAILED, payload: e, id: idRequest });
-  });
-};
-
-export const getCommitteeCandidate = () => (dispatch) => {
-  console.log('Get list commitee candidate');
-  dispatch({ type: ACTIONS.CONSTANT_CANDIDATE });
-  axios.post(`${process.env.internalAPI}`, {
-    jsonrpc: '1.0',
-    method: 'getcommitteecandidate',
-    params: [],
-    id: idRequest += 1,
-  }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_SUCCESS, payload: res.data, id: idRequest });
-  }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_FAILED, payload: e, id: idRequest });
-  });
-};
-
-export const getBlockProducer = () => (dispatch) => {
-  console.log('Get list commitee candidate');
-  dispatch({ type: ACTIONS.CONSTANT_PRODUCER });
-  axios.post(`${process.env.internalAPI}`, {
-    jsonrpc: '1.0',
-    method: 'getblockproducer',
-    params: [],
-    id: idRequest += 1,
-  }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_PRODUCER_SUCCESS, payload: res.data });
-  }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_PRODUCER_FAILED, payload: e, id: idRequest });
-  });
-};
+export const getBlockchainInfo = () => createRPCRequest(ACTIONS.CONSTANT_INFO, 'getblockchaininfo', '');
+export const getBlocks = chainId => createRPCRequest(ACTIONS.CONSTANT_BLOCKS, 'getblocks', [10, chainId]);
+export const getBlock = blockHash => createRPCRequest(ACTIONS.CONSTANT_BLOCK, 'retrieveblock', [blockHash, '2']);
+export const getCommitteeCandidate = () => createRPCRequest(ACTIONS.CONSTANT_CANDIDATE, 'getcommitteecandidate', []);
+export const getBlockProducer = () => createRPCRequest(ACTIONS.CONSTANT_PRODUCER, 'getblockproducer', []);

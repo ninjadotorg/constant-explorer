@@ -72,10 +72,10 @@ class Home extends React.Component {
                 <Grid item key={block.Hash} sm={3}>
                   <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom component="h2">
-                        <Link to={`/chain/${index + 1}`}>{`Chain # ${index + 1}`}</Link>
-                      </Typography>
-                      <Typography>
+                      <div>
+                        <Typography gutterBottom component="h2">
+                          <Link to={`/chain/${index + 1}`}>{`Chain # ${index + 1}`}</Link>
+                        </Typography>
                         <ul>
                           <li>
                             Height:
@@ -117,7 +117,7 @@ class Home extends React.Component {
                             constant
                           </li>
                         </ul>
-                      </Typography>
+                      </div>
                     </CardContent>
                   </Card>
                 </Grid>

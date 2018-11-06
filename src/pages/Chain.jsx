@@ -78,19 +78,13 @@ class Chain extends React.Component {
                   <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
                 </li>
                 <li>
-                  Block signature:
-                  {' '}
-                  {block.BlockProducer}
+                  {`Block signature: ${block.BlockProducer}`}
                 </li>
                 <li>
-                  Mined by
-                  {' '}
-                  {block.BlockProducer}
+                  {`Mined by ${block.BlockProducer}`}
                 </li>
                 <li>
-                  Total transactions:
-                  {' '}
-                  {block.TxHashes.length}
+                  {`Total transactions: ${block.TxHashes.length}`}
                 </li>
                 <li>
                   Time:

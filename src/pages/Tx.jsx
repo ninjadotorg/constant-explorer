@@ -38,10 +38,7 @@ class Tx extends React.Component {
               </Card>
               <Card style={{ marginTop: '20px', marginBottom: '20px' }}>
                 <CardContent>
-                  <Typography>
-                    Tx information:
-
-                  </Typography>
+                  Tx information:
                 </CardContent>
               </Card>
             </div>
