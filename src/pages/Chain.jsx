@@ -44,12 +44,19 @@ class Chain extends React.Component {
       chainId,
       rawchainId,
     };
-  }
 
-  componentDidMount() {
-    const { rawchainId } = this.state;
     const { actionGetBlocks } = this.props;
     actionGetBlocks(rawchainId);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (
+      nextProps.blocks[prevState.rawchainId] ?.updatedAt
+        !== prevState.blocks[prevState.rawchainId] ?.updatedAt
+    ) {
+      return { blocks: nextProps.blocks };
+    }
+    return null;
   }
 
   renderBlocks = (blockArrays) => {
@@ -59,40 +66,38 @@ class Chain extends React.Component {
         <Grid item key={block.Hash} sm={6} md={4} lg={12}>
           <Card className={classes.card}>
             <CardContent className={classes.cardContent}>
-              <Typography align="left" variant="h6" component="h6">
+              <Typography align="left" component="h6">
                 Block
                 {' '}
                 {block.Height}
               </Typography>
-              <Typography align="left">
-                <ul>
-                  <li>
-                    Block hash:
-                    {' '}
-                    <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
-                  </li>
-                  <li>
-                    Block signature:
-                    {' '}
-                    {block.BlockProducer}
-                  </li>
-                  <li>
-                    Mined by
-                    {' '}
-                    {block.BlockProducer}
-                  </li>
-                  <li>
-                    Total transactions:
-                    {' '}
-                    {block.TxHashes.length}
-                  </li>
-                  <li>
-                    Time:
-                    {' '}
-                    {timeConverter(block.Time)}
-                  </li>
-                </ul>
-              </Typography>
+              <ul style={{ textAlign: 'left' }}>
+                <li>
+                  Block hash:
+                  {' '}
+                  <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
+                </li>
+                <li>
+                  Block signature:
+                  {' '}
+                  {block.BlockProducer}
+                </li>
+                <li>
+                  Mined by
+                  {' '}
+                  {block.BlockProducer}
+                </li>
+                <li>
+                  Total transactions:
+                  {' '}
+                  {block.TxHashes.length}
+                </li>
+                <li>
+                  Time:
+                  {' '}
+                  {timeConverter(block.Time)}
+                </li>
+              </ul>
             </CardContent>
           </Card>
         </Grid>
@@ -101,15 +106,15 @@ class Chain extends React.Component {
   }
 
   render() {
-    const { blocks, chainId } = this.state;
+    const { blocks, chainId, rawchainId } = this.state;
     const { classes } = this.props;
 
-    const blockArrays = blocks.Result;
+    const blockArrays = blocks[rawchainId] ?.list || [];
 
     return (
       <div className={classes.heroUnit}>
         <div className={classes.heroContent}>
-          <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+          <Typography component="h1" align="center" color="textPrimary" gutterBottom>
             {`Chain #${chainId}`}
           </Typography>
         </div>
@@ -117,7 +122,7 @@ class Chain extends React.Component {
           <Grid container spacing={40}>
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
-                <Typography gutterBottom variant="h3" component="h2">
+                <Typography gutterBottom component="h2">
                   <Icon className={cn(classes.icon, 'fa fa-cubes')} />
                   {' '}
                   Blocks
@@ -128,20 +133,12 @@ class Chain extends React.Component {
                       ? this.renderBlocks(blockArrays)
                       : ''
                   }
-                  {this.renderBlocks([
-                    { Hash: '00000', TxHashes: [] },
-                    { Hash: '00000', TxHashes: [] },
-                    { Hash: '00000', TxHashes: [] },
-                    { Hash: '00000', TxHashes: [] },
-                    { Hash: '00000', TxHashes: [] },
-                    { Hash: '00000', TxHashes: [] },
-                  ])}
                 </Grid>
               </Paper>
             </Grid>
             <Grid item xs={12} sm={6}>
               <Paper className={classes.paper}>
-                <Typography gutterBottom variant="h3" component="h2">
+                <Typography gutterBottom component="h2">
                   <Icon className={cn(classes.icon, 'fa fa-list-alt')} />
                   {' '}
                   Transactions
@@ -205,7 +202,7 @@ const styles = theme => ({
 export default withStyles(styles)(
   connect(
     state => ({
-      blocks: state.constant.blocks,
+      blocks: state.constant.chainBlocks,
     }),
     ({
       actionGetBlocks: getBlocks,

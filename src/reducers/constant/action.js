@@ -8,9 +8,9 @@ export const ACTIONS = {
   CONSTANT_BLOCKS: 'CONSTANT_BLOCKS',
   CONSTANT_BLOCKS_SUCCESS: 'CONSTANT_BLOCKS_SUCCESS',
   CONSTANT_BLOCKS_FAILED: 'CONSTANT_BLOCKS_FAILED',
-  CONSTANT_BLOCK: 'CONSTANT_BLOCKS',
-  CONSTANT_BLOCK_SUCCESS: 'CONSTANT_BLOCKS_SUCCESS',
-  CONSTANT_BLOCK_FAILED: 'CONSTANT_BLOCKS_FAILED',
+  CONSTANT_BLOCK: 'CONSTANT_BLOCK',
+  CONSTANT_BLOCK_SUCCESS: 'CONSTANT_BLOCK_SUCCESS',
+  CONSTANT_BLOCK_FAILED: 'CONSTANT_BLOCK_FAILED',
   CONSTANT_TXS: 'CONSTANT_TXS',
   CONSTANT_TXS_SUCCESS: 'CONSTANT_TXS_SUCCESS',
   CONSTANT_TXS_FAILED: 'CONSTANT_TXS_FAILED',
@@ -33,9 +33,9 @@ export const getBlockchainInfo = () => (dispatch) => {
     params: '',
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_INFO_SUCCESS, payload: res.data });
+    dispatch({ type: ACTIONS.CONSTANT_INFO_SUCCESS, payload: res.data, id: idRequest });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_INFO_FAILED, payload: e });
+    dispatch({ type: ACTIONS.CONSTANT_INFO_FAILED, payload: e, id: idRequest });
   });
 };
 
@@ -48,24 +48,26 @@ export const getBlocks = chainId => (dispatch) => {
     params: [10, chainId],
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCKS_SUCCESS, payload: res.data });
+    dispatch({
+      type: ACTIONS.CONSTANT_BLOCKS_SUCCESS, payload: res.data, chainId, id: idRequest,
+    });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCKS_FAILED, payload: e });
+    dispatch({ type: ACTIONS.CONSTANT_BLOCKS_FAILED, payload: e, id: idRequest });
   });
 };
 
-export const getBlock = (chainId, blockHash) => (dispatch) => {
+export const getBlock = blockHash => (dispatch) => {
   console.log('Load block');
   dispatch({ type: ACTIONS.CONSTANT_BLOCK });
   axios.post(`${process.env.internalAPI}`, {
     jsonrpc: '1.0',
-    method: 'getblock',
-    params: [blockHash, chainId],
+    method: 'retrieveblock',
+    params: [blockHash, '2'],
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCK_SUCCESS, payload: res.data });
+    dispatch({ type: ACTIONS.CONSTANT_BLOCK_SUCCESS, payload: res.data, id: idRequest });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_BLOCK_FAILED, payload: e });
+    dispatch({ type: ACTIONS.CONSTANT_BLOCK_FAILED, payload: e, id: idRequest });
   });
 };
 
@@ -78,9 +80,9 @@ export const getCommitteeCandidate = () => (dispatch) => {
     params: [],
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_SUCCESS, payload: res.data });
+    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_SUCCESS, payload: res.data, id: idRequest });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_FAILED, payload: e });
+    dispatch({ type: ACTIONS.CONSTANT_CANDIDATE_FAILED, payload: e, id: idRequest });
   });
 };
 
@@ -95,6 +97,6 @@ export const getBlockProducer = () => (dispatch) => {
   }).then((res) => {
     dispatch({ type: ACTIONS.CONSTANT_PRODUCER_SUCCESS, payload: res.data });
   }).catch((e) => {
-    dispatch({ type: ACTIONS.CONSTANT_PRODUCER_FAILED, payload: e });
+    dispatch({ type: ACTIONS.CONSTANT_PRODUCER_FAILED, payload: e, id: idRequest });
   });
 };

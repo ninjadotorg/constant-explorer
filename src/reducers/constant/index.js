@@ -2,8 +2,8 @@ import { ACTIONS } from './action';
 
 export default (state = {
   chainInfo: { updatedAt: Date.now() },
-  chains: { list: [], updatedAt: Date.now() },
-  blocks: { list: [], updatedAt: Date.now() },
+  chainBlocks: {},
+  block: { block: {}, updatedAt: Date.now() },
   txs: { list: [], updatedAt: Date.now() },
   producers: { list: {}, updatedAt: Date.now() },
   candidates: { list: {}, updatedAt: Date.now() },
@@ -25,6 +25,22 @@ export default (state = {
       return {
         ...state,
         producers: { list: action.payload.Result, updatedAt: Date.now() },
+      };
+    }
+    case ACTIONS.CONSTANT_BLOCKS_SUCCESS: {
+      return {
+        ...state,
+        chainBlocks: {
+          [action.chainId]: { list: action.payload.Result, updatedAt: Date.now() },
+        },
+      };
+    }
+    case ACTIONS.CONSTANT_BLOCK_SUCCESS: {
+      return {
+        ...state,
+        block: {
+          [action.payload.Result.Hash]: { data: action.payload.Result, updatedAt: Date.now() },
+        },
       };
     }
     default: {

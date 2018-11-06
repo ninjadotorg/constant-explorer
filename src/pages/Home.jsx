@@ -25,6 +25,9 @@ class Home extends React.Component {
     this.state = {
       chainInfo,
     };
+
+    const { actionGetBlockChainInfo } = this.props;
+    actionGetBlockChainInfo();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -32,11 +35,6 @@ class Home extends React.Component {
       return { chainInfo: nextProps.chainInfo };
     }
     return null;
-  }
-
-  componentDidMount() {
-    const { actionGetBlockChainInfo } = this.props;
-    actionGetBlockChainInfo();
   }
 
   render() {
@@ -56,12 +54,12 @@ class Home extends React.Component {
     return (
       <div className={classes.heroUnit}>
         <div className={classes.heroContent}>
-          <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+          <Typography component="h1" align="center" color="textPrimary" gutterBottom>
             Blockchain Information:
             {' '}
             {chainName}
           </Typography>
-          <Typography variant="h6" align="center" color="textSecondary" paragraph>
+          <Typography align="center" color="textSecondary" paragraph>
             Total blocks produced:
             {' '}
             {totalBlocks}
@@ -74,7 +72,7 @@ class Home extends React.Component {
                 <Grid item key={block.Hash} sm={3}>
                   <Card className={classes.card}>
                     <CardContent className={classes.cardContent}>
-                      <Typography gutterBottom variant="h5" component="h2">
+                      <Typography gutterBottom component="h2">
                         <Link to={`/chain/${index + 1}`}>{`Chain # ${index + 1}`}</Link>
                       </Typography>
                       <Typography>
