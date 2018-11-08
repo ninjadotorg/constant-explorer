@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import cn from '@sindresorhus/class-names';
 import { showDialog } from '@/reducers/app/action';
-import logoC from '@constant-core-ui/base/images/logo-C.svg.raw';
+import logoC from '@/assets/logo-C.svg.raw';
 
 class Header extends React.Component {
   static propTypes = {
+
 
   }
 
