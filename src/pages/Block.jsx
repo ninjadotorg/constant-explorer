@@ -1,8 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import cn from '@sindresorhus/class-names';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getBlock } from '@/reducers/constant/action';
@@ -51,7 +48,7 @@ class Block extends React.Component {
       this.fetch();
     }
     if (prevState.blockHash === blockHash && isLatest) {
-      setTimeout(() => this.fetch(), 1000);
+      // setTimeout(() => this.fetch(), 1000);
     }
   }
 
@@ -63,59 +60,83 @@ class Block extends React.Component {
 
   render() {
     const { blockHash, block } = this.state;
+    const chainId = block[blockHash] ?.data ?.ChainID + 1;
+
+    if (!block[blockHash] ?.data) {
+      return null;
+    }
+
     return (
-      <div className="block-page">
+      <div className="c-explorer-page c-explorer-page-chains">
         <div className="container">
           <div className="row">
             <div className="col-12">
-              <Card>
-                <CardContent>
-                  Block:
-                  {' '}
-                  <strong>{blockHash}</strong>
-                </CardContent>
-              </Card>
-              <Card style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <CardContent>
-                  <div>Block information</div>
-                  <div>
-                    <ul>
-                      <li>
-                        ChainID:
-                        {' '}
-                        <Link to={`/chain/${block[blockHash] ?.data ?.ChainID + 1}`}>{(block[blockHash] ?.data.ChainID || 0) + 1}</Link>
-                      </li>
-                      <li>{`Version: ${block[blockHash] ?.data.Version || ''}`}</li>
-                      <li>{`Height: ${block[blockHash] ?.data.Height || ''}`}</li>
-                      <li>{`Confirmations: ${block[blockHash] ?.data.confirmations || ''}`}</li>
-                      <li>{`MerkleRoot: ${block[blockHash] ?.data.MerkleRoot || ''}`}</li>
-                      <li>{`Time: ${block[blockHash] ?.data.Time || ''}`}</li>
-                      <li>
-                        PreviousBlockHash:
-                        <Link to={`/block/${block[blockHash] ?.data.PreviousBlockHash}`}>{`${block[blockHash] ?.data.PreviousBlockHash || ''}`}</Link>
-                      </li>
-                      {
-                        block[blockHash] ?.data.NextBlockHash
-                          ? (
-                            <li>
-                              NextBlockHash:
-                              <Link to={`/block/${block[blockHash] ?.data.NextBlockHash}`}>{`${block[blockHash] ?.data.NextBlockHash || ''}`}</Link>
-                            </li>
-                          )
-                          : 'NextBlockHash: mining...'
-                      }
-                      <li>{`BlockProducer: ${block[blockHash] ?.data.BlockProducer || ''}`}</li>
-                      <li>{`BlockProducerSign: ${block[blockHash] ?.data.BlockProducerSign || ''}`}</li>
-                      <li>{`Data: ${block[blockHash] ?.data.Data || ''}`}</li>
-                      <li>
-                        Txs:
-                        {' '}
-                        <Link to={`/block/${blockHash}/txs`}>{`${block[blockHash] ?.data.Txs.length || ''}`}</Link>
-                      </li>
-                    </ul>
+              <div className="c-breadcrumb">
+                <ul>
+                  <li><Link to="/">Explorer</Link></li>
+                  <li><Link to="/chains">Chain list</Link></li>
+                  <li><Link to={`/chain/${chainId}`}>{`Chain #${chainId}`}</Link></li>
+                  <li><Link className="c-hash" to={`/block/${blockHash}`}>{blockHash}</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="row">
+                  <div className="col-12">
+                    <h3>Block</h3>
+                    <div className="c-hash c-text-cut">{blockHash}</div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <table>
+                  <tbody className="c-table c-table-list">
+                    <tr>
+                      <td>Block number at chain</td>
+                      <td className="c-hash">{block[blockHash].data.Height}</td>
+                    </tr>
+                    <tr>
+                      <td>Version</td>
+                      <td className="c-hash">{block[blockHash].data.Version}</td>
+                    </tr>
+                    <tr>
+                      <td>Confirmations</td>
+                      <td className="c-hash">{block[blockHash].data.confirmations}</td>
+                    </tr>
+                    <tr>
+                      <td>Time</td>
+                      <td>{block[blockHash].data.Time}</td>
+                    </tr>
+                    <tr>
+                      <td>Previous block</td>
+                      <td className="c-hash"><Link to={`/block/${block[blockHash].data.PreviousBlockHash}`}>{block[blockHash].data.PreviousBlockHash}</Link></td>
+                    </tr>
+                    <tr>
+                      <td>Next block</td>
+                      <td className="c-hash"><Link to={`/block/${block[blockHash].data.NextBlockHash}`}>{block[blockHash].data.NextBlockHash}</Link></td>
+                    </tr>
+                    <tr>
+                      <td>Block producer</td>
+                      <td className="c-hash">{block[blockHash].data.BlockProducer}</td>
+                    </tr>
+                    <tr>
+                      <td>Block producer sign</td>
+                      <td className="c-hash">{block[blockHash].data.BlockProducerSign}</td>
+                    </tr>
+                    <tr>
+                      <td>Block data</td>
+                      <td>{block[blockHash].data.Data}</td>
+                    </tr>
+                    <tr>
+                      <td>TXs</td>
+                      <td className="c-hash"><Link to={`/block/${blockHash}/txs`}>{`${block[blockHash].data.Txs.length} - View all`}</Link></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

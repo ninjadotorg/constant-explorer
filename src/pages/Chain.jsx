@@ -1,52 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
 import cn from '@sindresorhus/class-names';
-import Icon from '@material-ui/core/Icon';
-import { getBlocks } from '@/reducers/constant/action';
+import { getBlocks, getBlockchainInfo } from '@/reducers/constant/action';
 import { Link } from 'react-router-dom';
-
-function timeConverter(UNIXTimestamp) {
-  const a = new Date(UNIXTimestamp * 1000);
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const year = a.getFullYear();
-  const month = months[a.getMonth()];
-  const date = a.getDate();
-  const hour = a.getHours();
-  const min = `0${a.getMinutes()}`;
-  const sec = `0${a.getSeconds()}`;
-  const time = `${date} ${month} ${year} ${hour}:${min.substr(-2)}:${sec.substr(-2)}`;
-  return time;
-}
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft, faChevronRight } from '@fortawesome/pro-regular-svg-icons';
 
 class Chain extends React.Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
+    chainInfo: PropTypes.object.isRequired,
     blocks: PropTypes.object.isRequired,
     actionGetBlocks: PropTypes.func.isRequired,
+    actionGetBlockChainInfo: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props);
-    const { match } = this.props;
+    const { match, chainInfo, blocks } = this.props;
     const { chainId } = match.params;
     const rawchainId = chainId - 1;
 
     this.state = {
-      blocks: props.blocks,
+      blocks,
       chainId,
+      chainInfo,
       rawchainId,
+      page: 1,
     };
 
-    const { actionGetBlocks } = this.props;
+    const { actionGetBlocks, actionGetBlockChainInfo } = this.props;
     actionGetBlocks(rawchainId);
+    actionGetBlockChainInfo();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -56,150 +42,185 @@ class Chain extends React.Component {
     ) {
       return { blocks: nextProps.blocks };
     }
+    if (nextProps.chainInfo.updatedAt !== prevState.chainInfo.updatedAt) {
+      return { chainInfo: nextProps.chainInfo };
+    }
+    const pageRegexExeced = /\?page=(\d+)$/.exec(nextProps.history.location.search);
+    if (pageRegexExeced) {
+      return { page: parseInt(pageRegexExeced[1], 10) };
+    }
     return null;
   }
 
-  renderBlocks = (blockArrays) => {
-    const { classes } = this.props;
-    return (
-      blockArrays.map(block => (
-        <Grid item key={block.Hash} sm={6} md={4} lg={12}>
-          <Card className={classes.card}>
-            <CardContent className={classes.cardContent}>
-              <Typography align="left" component="h6">
-                Block
-                {' '}
-                {block.Height}
-              </Typography>
-              <ul style={{ textAlign: 'left' }}>
-                <li>
-                  Block hash:
-                  {' '}
-                  <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
-                </li>
-                <li>
-                  {`Block signature: ${block.BlockProducer}`}
-                </li>
-                <li>
-                  {`Mined by ${block.BlockProducer}`}
-                </li>
-                <li>
-                  {`Total transactions: ${block.TxHashes.length}`}
-                </li>
-                <li>
-                  Time:
-                  {' '}
-                  {timeConverter(block.Time)}
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-        </Grid>
-      ))
-    );
-  }
-
   render() {
-    const { blocks, chainId, rawchainId } = this.state;
-    const { classes } = this.props;
+    const {
+      chainId, rawchainId, chainInfo, blocks, page,
+    } = this.state;
+    if (!chainInfo.ChainName) {
+      return null;
+    }
+    const bestBlocks = chainInfo.BestBlocks;
+    const chainBlock = bestBlocks[rawchainId];
 
-    const blockArrays = blocks[rawchainId] ?.list || [];
+    const totalPage = Math.ceil(chainBlock.Height / 20);
+
+    let prevPage = page - 1;
+    if (prevPage <= 0) prevPage = 1;
+    let nextPage = page + 1;
+    console.log(nextPage);
+    if (nextPage > totalPage) nextPage = totalPage;
 
     return (
-      <div className={classes.heroUnit}>
-        <div className={classes.heroContent}>
-          <Typography component="h1" align="center" color="textPrimary" gutterBottom>
-            {`Chain #${chainId}`}
-          </Typography>
-        </div>
-        <div className={cn(classes.layout, classes.cardGrid)}>
-          <Grid container spacing={40}>
-            <Grid item xs={12} sm={6}>
-              <Paper className={classes.paper}>
-                <Typography gutterBottom component="h2">
-                  <Icon className={cn(classes.icon, 'fa fa-cubes')} />
-                  {' '}
+      <div className="c-explorer-page c-explorer-page-chain">
+        <div className="container">
+          <div className="row">
+            <div className="col-12">
+              <div className="c-breadcrumb">
+                <ul>
+                  <li><Link to="/">Explorer</Link></li>
+                  <li><Link to="/chains">Chain list</Link></li>
+                  <li><Link to={`/chain/${chainId}`}>{`Chain #${chainId}`}</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="row">
+                  <div className="col-12 col-md-6">
+                    <h3>{`Chain #${chainId}`}</h3>
+                  </div>
+                  <div className="col-12 col-md-6">
+                    <table className="c-table c-table-list">
+                      <tbody>
+                        <tr>
+                          <td>Total block</td>
+                          <td><Link to={`/block/${chainBlock.Hash}`} className="c-hash">{chainBlock.Height}</Link></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <table className="c-table c-table-list">
+                  <tbody>
+                    <tr>
+                      <td>Block producer</td>
+                      <td className="c-hash">{chainBlock.BlockProducer}</td>
+                    </tr>
+                    <tr>
+                      <td>Salary fund</td>
+                      <td>{chainBlock.SalaryFund}</td>
+                    </tr>
+                    <tr>
+                      <td>Salary per TX</td>
+                      <td>{chainBlock.SalaryPerTx}</td>
+                    </tr>
+                    <tr>
+                      <td>Total TXs</td>
+                      <td>{chainBlock.TotalTxs}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="block-heading">
                   Blocks
-                </Typography>
-                <Grid container spacing={40}>
-                  {
-                    blockArrays && blockArrays.length
-                      ? this.renderBlocks(blockArrays)
-                      : ''
-                  }
-                </Grid>
-              </Paper>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Paper className={classes.paper}>
-                <Typography gutterBottom component="h2">
-                  <Icon className={cn(classes.icon, 'fa fa-list-alt')} />
-                  {' '}
-                  Transactions
-                </Typography>
-              </Paper>
-            </Grid>
-          </Grid>
+                </div>
+                <div>
+                  <table className="c-table c-table-list">
+                    <thead>
+                      <tr>
+                        <th>Height</th>
+                        <th>Hash</th>
+                        <th>TXs count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {blocks[rawchainId] && blocks[rawchainId].list.map(blockchain => (
+                        <tr key={blockchain.Hash}>
+                          <td>{blockchain.Height}</td>
+                          <td className="c-hash"><Link to={`/block/${blockchain.Hash}`}>{blockchain.Hash}</Link></td>
+                          <td className="c-hash"><Link to={`/block/${blockchain.Hash}/txs`}>{blockchain.TxHashes.length}</Link></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div>
+                    <div className="c-pagination">
+                      <ul>
+                        <li className={cn({
+                          prev: (page !== 1),
+                        })}
+                        >
+                          <Link
+                            to={`?page=${prevPage}`}
+                            onClick={(e) => {
+                              if (page === 1) {
+                                e.preventDefault();
+                              }
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faChevronLeft} />
+                          </Link>
+                        </li>
+                        {page - 3 > 0 ? <li><Link to="?page=1">1</Link></li> : ''}
+                        {page - 3 > 0 ? <li><Link to="?page=2">2</Link></li> : ''}
+                        {page - 3 > 0 ? <li><Link to={`?page=${page}`} onClick={(e) => { e.preventDefault(); }}>...</Link></li> : ''}
+                        {page - 2 > 0 ? <li><Link to={`?page=${page - 2}`}>{page - 2}</Link></li> : ''}
+                        {page - 1 ? <li><Link to={`?page=${page - 1}`}>{page - 1}</Link></li> : ''}
+                        <li className="active">
+                          <Link
+                            to={`?page=${page}`}
+                            onClick={(e) => { e.preventDefault(); }}
+                          >
+                            {page}
+                          </Link>
+                        </li>
+                        {page + 1 <= totalPage ? <li><Link to={`?page=${page + 1}`}>{page + 1}</Link></li> : ''}
+                        {page + 2 <= totalPage ? <li><Link to={`?page=${page + 2}`}>{page + 2}</Link></li> : ''}
+                        {page + 3 < totalPage ? <li><Link to={`?page=${page}`} onClick={(e) => { e.preventDefault(); }}>...</Link></li> : ''}
+                        {page + 3 < totalPage ? <li><Link to={`?page=${totalPage - 1}`}>{totalPage - 1}</Link></li> : ''}
+                        {page + 3 < totalPage ? <li><Link to={`?page=${totalPage}`}>{totalPage}</Link></li> : ''}
+                        <li className={cn({
+                          next: (page !== totalPage),
+                        })}
+                        >
+                          <Link
+                            to={`?page=${nextPage}`}
+                            onClick={(e) => {
+                              if (page === totalPage) {
+                                e.preventDefault();
+                              }
+                            }}
+                          >
+                            <FontAwesomeIcon icon={faChevronRight} />
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-const styles = theme => ({
-  icon: {
-    margin: theme.spacing.unit * 2,
-    display: 'contents !important',
-  },
-  heroUnit: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  heroContent: {
-    maxWidth: 600,
-    margin: '0 auto',
-    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
-  },
-  heroButtons: {
-    marginTop: theme.spacing.unit * 4,
-  },
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      width: '90%',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-});
-
-export default withStyles(styles)(
-  connect(
-    state => ({
-      blocks: state.constant.chainBlocks,
-    }),
-    ({
-      actionGetBlocks: getBlocks,
-    }),
-  )(Chain),
-);
+export default connect(
+  state => ({
+    blocks: state.constant.chainBlocks,
+    chainInfo: state.constant.chainInfo,
+  }),
+  ({
+    actionGetBlocks: getBlocks,
+    actionGetBlockChainInfo: getBlockchainInfo,
+  }),
+)(Chain);

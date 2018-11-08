@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getBlock } from '@/reducers/constant/action';
@@ -44,12 +42,9 @@ class Txs extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { blockHash, isLatest } = this.state;
+    const { blockHash } = this.state;
     if (prevState.blockHash !== blockHash) {
       this.fetch();
-    }
-    if (prevState.blockHash === blockHash && isLatest) {
-      setTimeout(() => this.fetch(), 1000);
     }
   }
 
@@ -62,35 +57,67 @@ class Txs extends React.Component {
 
   render() {
     const { blockHash, block } = this.state;
+    const chainId = block[blockHash] ?.data ?.ChainID + 1;
+
+    if (!block[blockHash] ?.data) {
+      return null;
+    }
 
     return (
-      <div className="txs-page">
+      <div className="c-explorer-page c-explorer-page-chains">
         <div className="container">
           <div className="row">
             <div className="col-12">
-              <Card>
-                <CardContent>
-                  Transaction of block:
-                  {' '}
-                  <Link to={`/block/${blockHash}`}><strong>{blockHash}</strong></Link>
-                </CardContent>
-              </Card>
-              <Card style={{ marginTop: '20px', marginBottom: '20px' }}>
-                <CardContent>
-                  <div>
-                    List of txs
-                    <div>
-                      <ul>
-                        {block[blockHash] && block[blockHash].data.Txs.map(tx => (
-                          <li key={tx.Hash}>
-                            <Link to={`/tx/${tx.Hash}`}>{tx.Hash}</Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+              <div className="c-breadcrumb">
+                <ul>
+                  <li><Link to="/">Explorer</Link></li>
+                  <li><Link to="/chains">Chain list</Link></li>
+                  <li><Link to={`/chain/${chainId}`}>{`Chain #${chainId}`}</Link></li>
+                  <li>
+                    <Link
+                      className="c-text-ellipsis c-hash"
+                      style={{ maxWidth: '100px', display: 'inline-block', verticalAlign: 'top' }}
+                      to={`/block/${blockHash}`}
+                    >
+                      {blockHash}
+                    </Link>
+                  </li>
+                  <li><Link to={`/block/${blockHash}/txs`}>TXs</Link></li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="row">
+                  <div className="col-12">
+                    <h3>TXs of block</h3>
+                    <div className="c-hash">{blockHash}</div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="block-heading">
+                  Txs
+                </div>
+                <table className="c-table c-table-list">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Tx hash</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {block[blockHash].data.Txs.map((tx, index) => (
+                      <tr key={tx}>
+                        <td>{index}</td>
+                        <td><Link to={`/tx/${tx.Hash}`} className="c-hash">{tx.Hash}</Link></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

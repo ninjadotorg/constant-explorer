@@ -19,14 +19,17 @@ const createRPCRequest = (actionName, method, params) => (dispatch) => {
     params,
     id: idRequest += 1,
   }).then((res) => {
-    dispatch({ type: `${actionName}_SUCCESS`, payload: res.data, id: idRequest });
+    dispatch({
+      type: `${actionName}_SUCCESS`, payload: res.data, id: idRequest, params,
+    });
   }).catch((e) => {
     dispatch({ type: `${actionName}_FAILED`, payload: e, id: idRequest });
   });
 };
 
 export const getBlockchainInfo = () => createRPCRequest(ACTIONS.CONSTANT_INFO, 'getblockchaininfo', '');
-export const getBlocks = chainId => createRPCRequest(ACTIONS.CONSTANT_BLOCKS, 'getblocks', [10, chainId]);
+export const getBlocks = chainId => createRPCRequest(ACTIONS.CONSTANT_BLOCKS, 'getblocks', [20, chainId]);
 export const getBlock = blockHash => createRPCRequest(ACTIONS.CONSTANT_BLOCK, 'retrieveblock', [blockHash, '2']);
 export const getCommitteeCandidate = () => createRPCRequest(ACTIONS.CONSTANT_CANDIDATE, 'getcommitteecandidate', []);
 export const getBlockProducer = () => createRPCRequest(ACTIONS.CONSTANT_PRODUCER, 'getblockproducer', []);
+export const getTx = txHash => createRPCRequest(ACTIONS.CONSTANT_TX, 'gettransactionbyhash', [txHash]);

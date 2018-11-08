@@ -7,6 +7,7 @@ export default (state = {
   txs: { list: [], updatedAt: Date.now() },
   producers: { list: {}, updatedAt: Date.now() },
   candidates: { list: {}, updatedAt: Date.now() },
+  tx: {},
 }, action) => {
   switch (action.type) {
     case `${ACTIONS.CONSTANT_INFO}_SUCCESS`: {
@@ -31,7 +32,7 @@ export default (state = {
       return {
         ...state,
         chainBlocks: {
-          [action.chainId]: { list: action.payload.Result, updatedAt: Date.now() },
+          [action.params[1]]: { list: action.payload.Result, updatedAt: Date.now() },
         },
       };
     }
@@ -40,6 +41,14 @@ export default (state = {
         ...state,
         block: {
           [action.payload.Result.Hash]: { data: action.payload.Result, updatedAt: Date.now() },
+        },
+      };
+    }
+    case `${ACTIONS.CONSTANT_TX}_SUCCESS`: {
+      return {
+        ...state,
+        tx: {
+          [action.params[0]]: { data: action.payload.Result, updatedAt: Date.now() },
         },
       };
     }

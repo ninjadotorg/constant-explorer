@@ -1,44 +1,58 @@
-.header {
+.c-explorer-header {
+  position: relative;
+  z-index: 5;
+  background-color: get-color('c-white');
   height: 80px;
-  background-color: $headercolor;
-  line-height: 80px;
-  a {
-    color: $headerLogo;
-    text-decoration: none;
-    font-weight: 600;
-  }
-  .row {
-    > div > div {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  .logo-container {
+    line-height: 80px;
+    float: left;
+    .logo {
       float: left;
     }
-  }
-  .logo-container {
-    a {
-      display: block;
-      height: 100%;
+    .title {
+      float: left;
+      margin-left: -25px;
+      color: get-color('primary');
+      font-weight: bold;
+      font-size: 22px;
+      white-space: nowrap;
+      &::first-letter {
+        visibility: hidden;
+      }
+      text-decoration: none;
     }
-  }
-  .header-menu-bar {
-    float: right !important;
-    ul {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      li {
-        padding: 0 20px;
-        display: inline-block;
-        @media (max-width: 1280px) {
-          padding: 0 7px;
-        }
-        a {
-          display: block;
-          height: 100%;
+    @include breakpoint-max('sm') {
+      .logo {
+        svg {
+          height: 50px;
         }
       }
+      .title {
+        margin-left: -15px;
+        font-size: 16px;
+      }
     }
-    button {
-      margin-left: 20px;
+  }
+  .menu {
+    user-select: none;
+    height: 80px;
+    float: right;
+    position: relative;
+    ul {
+      height: 40px;
+      top: 50%;
+      right: 0;
+      line-height: 40px;
+      position: absolute;
+      white-space: nowrap;
+      a {
+        padding: 0 20px;
+        text-decoration: none;
+      }
     }
   }
 }

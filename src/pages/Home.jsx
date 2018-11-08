@@ -1,18 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import cn from '@sindresorhus/class-names';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import { withStyles } from '@material-ui/core/styles';
 import { getBlockchainInfo } from '@/reducers/constant/action';
+import { Link } from 'react-router-dom';
 
 class Home extends React.Component {
   static propTypes = {
-    classes: PropTypes.object.isRequired,
     actionGetBlockChainInfo: PropTypes.func.isRequired,
     chainInfo: PropTypes.object.isRequired,
   }
@@ -24,6 +17,7 @@ class Home extends React.Component {
 
     this.state = {
       chainInfo,
+      searchError: '',
     };
 
     const { actionGetBlockChainInfo } = this.props;
@@ -37,154 +31,125 @@ class Home extends React.Component {
     return null;
   }
 
+  submitSearch = (e) => {
+    e.preventDefault();
+    const keyword = this.searchInput.value;
+    console.log(keyword);
+    this.setState({ searchError: 'This\'s not Tx hash or Block hash' });
+  }
+
   render() {
-    const { classes } = this.props;
-    const { chainInfo } = this.state;
+    const { chainInfo, searchError } = this.state;
     if (!chainInfo.ChainName) {
       return null;
     }
-    const chainName = chainInfo.ChainName;
     const bestBlocks = chainInfo.BestBlocks;
 
-    let totalBlocks = 0;
-    Object.values(bestBlocks).forEach((block) => {
-      totalBlocks += block.Height;
-    });
+    const totalTxs = Object.keys(bestBlocks).reduce(
+      (accumulator, blockIndex) => (
+        parseInt(accumulator, 10) + parseInt(bestBlocks[blockIndex].TotalTxs, 10)
+      ),
+    );
+
+    const totalBlocks = Object.keys(bestBlocks).reduce(
+      (accumulator, blockIndex) => (
+        parseInt(accumulator, 10) + parseInt(bestBlocks[blockIndex].Height, 10)
+      ),
+    );
 
     return (
-      <div className={classes.heroUnit}>
-        <div className={classes.heroContent}>
-          <Typography component="h1" align="center" color="textPrimary" gutterBottom>
-            Blockchain Information:
-            {' '}
-            {chainName}
-          </Typography>
-          <Typography align="center" color="textSecondary" paragraph>
-            Total blocks produced:
-            {' '}
-            {totalBlocks}
-          </Typography>
-        </div>
-        <div className={cn(classes.layout, classes.cardGrid)}>
-          <Grid container spacing={40}>
-            {
-              Object.values(bestBlocks).map((block, index) => (
-                <Grid item key={block.Hash} sm={3}>
-                  <Card className={classes.card}>
-                    <CardContent className={classes.cardContent}>
-                      <div>
-                        <Typography gutterBottom component="h2">
-                          <Link to={`/chain/${index + 1}`}>{`Chain # ${index + 1}`}</Link>
-                        </Typography>
-                        <ul>
-                          <li>
-                            Height:
-                            {' '}
-                            {block.Height}
-                          </li>
-                          <li>
-                            Best block hash:
-                            {' '}
-                            <Link to={`/block/${block.Hash}`}>{block.Hash}</Link>
-                          </li>
-                          <li>
-                            Best block signature:
-                            {' '}
-                            {block.BlockProducer}
-                          </li>
-                          <li>
-                            Current leader:
-                            {' '}
-                            {block.BlockProducer}
-                          </li>
-                          <li>
-                            Total transactions:
-                            {' '}
-                            {block.TotalTxs}
-                          </li>
-                          <li>
-                            Salary Fund:
-                            {' '}
-                            {block.SalaryFund}
-                            {' '}
-                            constant
-                          </li>
-                          <li>
-                            Current Basic Salary:
-                            {' '}
-                            {block.BasicSalary}
-                            {' '}
-                            constant
-                          </li>
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))
-            }
-          </Grid>
+      <div className="c-explorer-page c-explorer-page-home">
+        <div className="container">
+          <div className="row">
+            <div className="col-12">
+              <div className="home-top-info-container block">
+                <ul className="home-top-info c-list-inline">
+                  <li>
+                    <Link to="/">
+                      <div className="data c-color-black">{chainInfo.ChainName}</div>
+                      <div className="title">Network</div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/committees">
+                      <div className="data c-color-black">0</div>
+                      <div className="title">Total candidates</div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/chains">
+                      <div className="data c-color-black">20</div>
+                      <div className="title">Total chain</div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/">
+                      <div className="data c-color-black">{totalBlocks}</div>
+                      <div className="title">Total blocks</div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/">
+                      <div className="data c-color-black">{totalTxs}</div>
+                      <div className="title">Total txs</div>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content home-search">
+                <div className="title">
+                  Search
+                </div>
+                <form onSubmit={this.submitSearch}>
+                  <input
+                    type="text"
+                    className="c-input"
+                    placeholder="Block hash, tx hash, account address, ..."
+                    ref={(div) => { this.searchInput = div; return null; }}
+                  />
+                  {searchError && <span className="c-text-error">{searchError}</span>}
+                </form>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="block content">
+                <div className="block-heading">
+                  Best blocks
+                </div>
+                <table className="c-table">
+                  <thead>
+                    <tr>
+                      <th>Block hash</th>
+                      <th>Chain #</th>
+                      <th>Total Txs</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(bestBlocks).map(key => (
+                      <tr key={key}>
+                        <td><Link to={`/block/${bestBlocks[key].Hash}`} className="c-hash">{bestBlocks[key].Hash}</Link></td>
+                        <td><Link to={`/chain/${parseInt(key, 10) + 1}`}>{parseInt(key, 10) + 1}</Link></td>
+                        <td>{bestBlocks[key].TotalTxs}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   }
 }
 
-const styles = theme => ({
-  appBar: {
-    position: 'relative',
-  },
-  icon: {
-    marginRight: theme.spacing.unit * 2,
-  },
-  heroUnit: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  heroContent: {
-    maxWidth: 600,
-    margin: '0 auto',
-    padding: `${theme.spacing.unit * 8}px 0 ${theme.spacing.unit * 6}px`,
-  },
-  heroButtons: {
-    marginTop: theme.spacing.unit * 4,
-  },
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      width: '90%',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  cardGrid: {
-    padding: `${theme.spacing.unit * 8}px 0`,
-  },
-  card: {
-    height: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  cardMedia: {
-    paddingTop: '56.25%', // 16:9
-  },
-  cardContent: {
-    flexGrow: 1,
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing.unit * 6,
-  },
-});
-
-export default withStyles(styles)(
-  connect(
-    state => ({
-      chainInfo: state.constant.chainInfo,
-    }),
-    ({
-      actionGetBlockChainInfo: getBlockchainInfo,
-    }),
-  )(Home),
-);
+export default connect(
+  state => ({
+    chainInfo: state.constant.chainInfo,
+  }),
+  ({
+    actionGetBlockChainInfo: getBlockchainInfo,
+  }),
+)(Home);

@@ -1,13 +1,6 @@
 @import "../../node_modules/bootstrap-nojs/bootstrap.css";
-@import "var";
+@import "~@contant-core-ui/base/constant.scss";
 @import "system/main";
-@import "system/button";
-@import "system/input";
-@import "system/heading";
-@import "system/breadcrumb";
 @import "system/header";
 @import "system/footer";
-@import "pages/content";
-@import "pages/main";
-@import "pages/block-page";
-@import "pages/txs-page";
+@import "pages";
