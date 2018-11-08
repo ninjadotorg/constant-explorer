@@ -646,10 +646,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@contant-core-ui/base@^0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@contant-core-ui/base/-/base-0.0.2.tgz#d03287f5a2f8412ebc1683a1016bfe9f8466909f"
-  integrity sha512-7GVkYMGqEMZlsY7WLpHuUZYBjbpDQFER3uTDY0qOKQrMNstwkm2MGp6hVfPx0pVuvZkKk+x5pSbq1LbkO/hlcQ==
+"@contant-core-ui/base@0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@contant-core-ui/base/-/base-0.0.3.tgz#3a355de2b14c3f0977d31f69e2640a66b8c53c58"
+  integrity sha512-PM6kev0F6CChsBDH3Ok56ntqV02+OBA14YfDilh+EJDCtyJ4TYwVZJ6VQUwnSUDRTiQB/QCqIotM1LvYN2Dt0A==
 
 "@csstools/convert-colors@^1.4.0":
   version "1.4.0"
