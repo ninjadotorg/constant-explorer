@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getTx } from '@/reducers/constant/action';
+import TxComponent from '@/components/Tx';
 
 class Tx extends React.Component {
   static propTypes = {
@@ -46,8 +47,6 @@ class Tx extends React.Component {
 
     specTx = specTx.data;
 
-    console.log(specTx);
-
     const chainId = 1;
 
     return (
@@ -84,42 +83,7 @@ class Tx extends React.Component {
             </div>
             <div className="col-12">
               <div className="block content">
-                <table className="c-table">
-                  <tbody>
-                    <tr>
-                      <td>Version</td>
-                      <td>{specTx.Version}</td>
-                    </tr>
-                    <tr>
-                      <td>Type</td>
-                      <td>{specTx.Type}</td>
-                    </tr>
-                    <tr>
-                      <td>Fee</td>
-                      <td>{specTx.Fee}</td>
-                    </tr>
-                    <tr>
-                      <td>Lock time</td>
-                      <td>{specTx.LockTime}</td>
-                    </tr>
-                    <tr>
-                      <td>JSPubKey</td>
-                      <td className="c-hash" style={{ wordWrap: 'break-word', whiteSpace: 'normal' }}>{specTx.JSPubKey}</td>
-                    </tr>
-                    <tr>
-                      <td>JSSig</td>
-                      <td className="c-hash" style={{ wordWrap: 'break-word', whiteSpace: 'normal' }}>{specTx.JSSig}</td>
-                    </tr>
-                    <tr>
-                      <td>AddressLastByte</td>
-                      <td>{specTx.AddressLastByte}</td>
-                    </tr>
-                    <tr>
-                      <td>Descs</td>
-                      <td><pre>{JSON.stringify(specTx.Descs, null, 4)}</pre></td>
-                    </tr>
-                  </tbody>
-                </table>
+                <TxComponent tx={specTx} />
               </div>
             </div>
           </div>

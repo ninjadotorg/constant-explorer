@@ -1,23 +1,32 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getBlockchainInfo } from '@/reducers/constant/action';
+import { getBlockchainInfo, checkHash } from '@/reducers/constant/action';
 import { Link } from 'react-router-dom';
+import { push } from 'connected-react-router';
+import { trim } from 'lodash';
 
 class Home extends React.Component {
   static propTypes = {
     actionGetBlockChainInfo: PropTypes.func.isRequired,
+    actionCheckHash: PropTypes.func.isRequired,
+    dispatch: PropTypes.func.isRequired,
     chainInfo: PropTypes.object.isRequired,
+    search: PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props);
 
     const { chainInfo } = this.props;
+    const { search } = props;
 
     this.state = {
       chainInfo,
       searchError: '',
+      searchSuccess: '',
+      searchUpdateAt: search.updatedAt,
+      keyword: '',
     };
 
     const { actionGetBlockChainInfo } = this.props;
@@ -28,14 +37,49 @@ class Home extends React.Component {
     if (nextProps.chainInfo.updatedAt !== prevState.chainInfo.updatedAt) {
       return { chainInfo: nextProps.chainInfo };
     }
+    if (nextProps.search.updatedAt !== prevState.searchUpdateAt) {
+      const { search } = nextProps;
+      if (search.keyword) {
+        if (search.success) {
+          return { searchSuccess: search.success, searchUpdateAt: nextProps.search.updatedAt };
+        }
+        return { searchError: 'This\'s not Tx hash or Block hash', searchUpdateAt: nextProps.search.updatedAt };
+      }
+    }
     return null;
   }
 
+  componentDidUpdate() {
+    const { keyword, searchSuccess } = this.state;
+    const { dispatch } = this.props;
+
+    if (searchSuccess) {
+      switch (searchSuccess) {
+        case 'tx':
+          dispatch({ type: 'CLEAR_SEARCH' });
+          dispatch(push(`/tx/${keyword}`));
+          return;
+        case 'pending':
+          dispatch({ type: 'CLEAR_SEARCH' });
+          dispatch(push(`/tx/pending/${keyword}`));
+          return;
+        case 'block':
+          dispatch({ type: 'CLEAR_SEARCH' });
+          dispatch(push(`/block/${keyword}`));
+          return;
+        default:
+          console.log('Not match type');
+      }
+    }
+  }
+
   submitSearch = (e) => {
+    const { actionCheckHash } = this.props;
+
     e.preventDefault();
-    const keyword = this.searchInput.value;
-    console.log(keyword);
-    this.setState({ searchError: 'This\'s not Tx hash or Block hash' });
+    const keyword = trim(this.searchInput.value);
+    this.setState({ keyword });
+    actionCheckHash(keyword);
   }
 
   render() {
@@ -83,13 +127,13 @@ class Home extends React.Component {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/">
+                    <Link to="/#best-blocks">
                       <div className="data c-color-black">{totalBlocks}</div>
                       <div className="title">Total blocks</div>
                     </Link>
                   </li>
                   <li>
-                    <Link to="/">
+                    <Link to="/txs/pending">
                       <div className="data c-color-black">{totalTxs}</div>
                       <div className="title">Total txs</div>
                     </Link>
@@ -114,7 +158,7 @@ class Home extends React.Component {
               </div>
             </div>
             <div className="col-12">
-              <div className="block content">
+              <div className="block content" id="best-blocks">
                 <div className="block-heading">
                   Best blocks
                 </div>
@@ -148,8 +192,11 @@ class Home extends React.Component {
 export default connect(
   state => ({
     chainInfo: state.constant.chainInfo,
+    search: state.constant.search,
   }),
-  ({
-    actionGetBlockChainInfo: getBlockchainInfo,
+  dispatch => ({
+    actionGetBlockChainInfo: () => dispatch(getBlockchainInfo()),
+    actionCheckHash: hash => dispatch(checkHash(hash)),
+    dispatch,
   }),
 )(Home);

@@ -2,7 +2,6 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import cn from '@sindresorhus/class-names';
 import { showDialog } from '@/reducers/app/action';
 import logoC from '@/assets/logo-C.svg.raw';
 
@@ -39,6 +38,7 @@ class Header extends React.Component {
                   <li><Link to="/chains">Chains</Link></li>
                   <li><Link to="/txs/pending">Pending TXs</Link></li>
                   <li><Link to="/committees">Committees</Link></li>
+                  <li><Link to="/tokens">Tokens</Link></li>
                 </ul>
               </div>
             </div>
