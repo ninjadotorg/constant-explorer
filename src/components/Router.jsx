@@ -22,6 +22,7 @@ const Tx = createDynamicImport(() => import('@/pages/Tx'), Loading);
 const Tokens = createDynamicImport(() => import('@/pages/Tokens'), Loading);
 const Token = createDynamicImport(() => import('@/pages/Token'), Loading);
 const Live = createDynamicImport(() => import('@/pages/Live'), Loading);
+const Info = createDynamicImport(() => import('@/pages/Info'), Loading);
 
 const routers = [
   { path: '/', exact: true, component: Home },
@@ -36,6 +37,7 @@ const routers = [
   { path: '/token/:customTokenId', exact: true, component: Token },
   { path: '/committees', exact: true, component: Committees },
   { path: '/live', exact: true, component: Live },
+  { path: '/info', exact: true, component: Info },
 ];
 
 class Router extends React.Component {

@@ -6,6 +6,9 @@ export default (state = {
   txs: { list: [], updatedAt: Date.now() },
   producers: { list: {}, updatedAt: Date.now() },
   candidates: { list: {}, updatedAt: Date.now() },
+  dcb: { list: [], updatedAt: Date.now() },
+  cb: { list: [], updatedAt: Date.now() },
+  gov: { list: [], updatedAt: Date.now() },
   block: {},
   tx: {},
   txPending: {},
@@ -55,6 +58,13 @@ export default (state = {
         mempool: { info: action.payload.Result, updatedAt: Date.now(), inited: true },
       };
     }
+    // producers
+    case `${ACTIONS.CONSTANT_PRODUCER}_SUCCESS`: {
+      return {
+        ...state,
+        producers: { list: action.payload.Result, updatedAt: Date.now() },
+      };
+    }
     // committees
     case `${ACTIONS.CONSTANT_CANDIDATE}_SUCCESS`: {
       return {
@@ -62,10 +72,25 @@ export default (state = {
         candidates: { list: action.payload.Result, updatedAt: Date.now() },
       };
     }
-    case `${ACTIONS.CONSTANT_PRODUCER}_SUCCESS`: {
+    // DCB
+    case `${ACTIONS.CONSTANT_DCB}_SUCCESS`: {
       return {
         ...state,
-        producers: { list: action.payload.Result, updatedAt: Date.now() },
+        dcb: { list: action.payload.Result || [], updatedAt: Date.now() },
+      };
+    }
+    // CB
+    case `${ACTIONS.CONSTANT_CB}_SUCCESS`: {
+      return {
+        ...state,
+        cb: { list: action.payload.Result || [], updatedAt: Date.now() },
+      };
+    }
+    // GOV
+    case `${ACTIONS.CONSTANT_GOV}_SUCCESS`: {
+      return {
+        ...state,
+        gov: { list: action.payload.Result || [], updatedAt: Date.now() },
       };
     }
     // blocks of chain
@@ -75,6 +100,13 @@ export default (state = {
         chainBlocks: {
           [action.params[1]]: { list: action.payload.Result, updatedAt: Date.now() },
         },
+      };
+    }
+    // tokens
+    case `${ACTIONS.CONSTANT_TOKENS}_SUCCESS`: {
+      return {
+        ...state,
+        tokens: { list: action.payload.Result.ListCustomToken, updatedAt: Date.now() },
       };
     }
     // block info
@@ -99,7 +131,7 @@ export default (state = {
     case `${ACTIONS.CONSTANT_TOKEN}_SUCCESS`: {
       return {
         ...state,
-        tx: {
+        token: {
           [action.params[0]]: { data: action.payload.Result, updatedAt: Date.now() },
         },
       };

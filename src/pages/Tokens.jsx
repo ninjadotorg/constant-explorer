@@ -22,8 +22,17 @@ class Tokens extends React.Component {
     actionGetTokens();
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.tokens.updatedAt !== prevState.tokens.updatedAt) {
+      return { tokens: nextProps.tokens };
+    }
+    return null;
+  }
+
   render() {
     const { tokens } = this.state;
+
+    console.log(tokens);
 
     return (
       <div className="c-explorer-page c-explorer-page-tokens">
@@ -54,12 +63,12 @@ class Tokens extends React.Component {
                   </thead>
                   <tbody>
                     {tokens.list.length ? tokens.list.map(token => (
-                      <tr>
-                        <td className="c-hash">{token.ID}</td>
+                      <tr key={token.ID}>
+                        <td className="c-hash"><Link to={`/token/${token.ID}`}>{token.ID}</Link></td>
                         <td className="c-hash">{token.Name}</td>
                         <td className="c-hash">{token.Symbol}</td>
                         <td className="c-hash">{token.Amount}</td>
-                        <td className="c-hash">{token.ListTxs.length}</td>
+                        <td className="c-hash">{token.ListTxs ?.length}</td>
                       </tr>
                     )) : <tr><td style={{ textAlign: 'center' }} colSpan={4}>Empty</td></tr>}
                   </tbody>

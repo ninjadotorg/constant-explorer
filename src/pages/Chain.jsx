@@ -151,7 +151,7 @@ class Chain extends React.Component {
                     </tbody>
                   </table>
                   <div>
-                    <div className="c-pagination">
+                    <div className="c-pagination" style={{ display: 'none' }}>
                       <ul>
                         <li className={cn({
                           prev: (page !== 1),

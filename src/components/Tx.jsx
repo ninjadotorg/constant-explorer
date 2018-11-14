@@ -50,6 +50,10 @@ class Tx extends React.Component {
             <td>Descs</td>
             <td><pre>{JSON.stringify(tx.Descs, null, 4)}</pre></td>
           </tr>
+          <tr>
+            <td>Metadata</td>
+            <td><pre>{tx.MetaData}</pre></td>
+          </tr>
         </tbody>
       </table>
     );

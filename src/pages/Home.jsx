@@ -158,6 +158,11 @@ class Home extends React.Component {
               </div>
             </div>
             <div className="col-12">
+              <div className="block content">
+                <Link to="/info">Blockchain advance information - GOV, DCB, CB</Link>
+              </div>
+            </div>
+            <div className="col-12">
               <div className="block content" id="best-blocks">
                 <div className="block-heading">
                   Best blocks
